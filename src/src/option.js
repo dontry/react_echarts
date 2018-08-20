@@ -112,6 +112,8 @@ const data = dataTool.prepareBoxplotData([
   ]
 ]);
 
+console.log("Outliers", data.outliers);
+
 const option = {
   title: [
     {
@@ -140,21 +142,39 @@ const option = {
     right: "10%",
     bottom: "15%"
   },
-  xAxis: {
-    type: "category",
-    data: data.axisData,
-    boundaryGap: true,
-    nameGap: 30,
-    splitArea: {
-      show: false
+  xAxis: [
+    {
+      type: "category",
+      data: data.axisData,
+      boundaryGap: true,
+      nameGap: 30,
+      splitArea: {
+        show: false
+      },
+      axisLabel: {
+        formatter: "expr {value}"
+      },
+      splitLine: {
+        show: false
+      }
     },
-    axisLabel: {
-      formatter: "expr {value}"
-    },
-    splitLine: {
-      show: false
+    {
+      type: "category",
+      data: data.axisData,
+      boundaryGap: true,
+      nameGap: 30,
+      show: false,
+      splitArea: {
+        show: false
+      },
+      axisLabel: {
+        formatter: "expr {value}"
+      },
+      splitLine: {
+        show: false
+      }
     }
-  },
+  ],
   yAxis: {
     type: "value",
     name: "km/s minus 299,000",
@@ -182,8 +202,70 @@ const option = {
     },
     {
       name: "outlier",
-      type: "scatter",
+      type: "pictorialBar",
+      symbolSize: 8,
+      symbolPosition: "end",
+      data: data.outliers,
+      barGap: "30%"
+    },
+    {
+      name: "label",
+      type: "pictorialBar",
+      symbolSize: 0,
+      symbolPosition: "end",
+      label: {
+        show: true,
+        position: "top",
+        formatter: function(params) {
+          return params.data[2] ? params.data[2] : "";
+        }
+      },
+      data: [[0, 200, "haha"]],
+      barGap: "30%",
+      xAxisIndex: 1
+    },
+    {
+      name: "boxplot",
+      type: "boxplot",
+      data: data.boxData,
+      tooltip: {
+        formatter: function(param) {
+          return [
+            "Experiment " + param.name + ": ",
+            "upper: " + param.data[5],
+            "Q3: " + param.data[4],
+            "median: " + param.data[3],
+            "Q1: " + param.data[2],
+            "lower: " + param.data[1]
+          ].join("<br/>");
+        }
+      }
+    },
+
+    {
+      name: "outlier",
+      type: "pictorialBar",
+      symbolSize: 8,
+      symbolPosition: "end",
+      barGap: "30%",
       data: data.outliers
+    },
+
+    {
+      name: "label",
+      type: "pictorialBar",
+      symbolSize: 0,
+      symbolPosition: "end",
+      barGap: "30%",
+      label: {
+        show: true,
+        position: "top",
+        formatter: function(params) {
+          return params.data[2] ? params.data[2] : "";
+        }
+      },
+      xAxisIndex: 1,
+      data: []
     }
   ]
 };
